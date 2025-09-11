@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { Flight, injectTicketsFacade } from '../../logic-flight';
 import { FlightCardComponent, FlightFilterComponent } from '../../ui-flight';
 import { JsonPipe } from '@angular/common';
+import { ReactiveNode, SIGNAL } from '@angular/core/primitives/signals';
+import { injectSignalsLogger } from '@flight-demo/shared/core';
 
 
 @Component({
@@ -33,11 +35,24 @@ export class FlightSearchComponent {
   protected flights = this.ticketsFacade.flights;
 
   constructor() {
-    effect(() => console.log(this.route()));
+    let activeConsumer: ReactiveNode | undefined;
+    const useSignalRoute = signal(true);
+    activeConsumer = effect(() => {
+      if (useSignalRoute()) {
+        console.log('Route Logger Effect:' + this.route());
+      } else {
+        console.log('Filter Logger Effect:' + this.filter());
+      }
+    });
     effect(() => {
       this.filter();
       untracked(() => this.search());
     });
+
+    console.log(this.route[SIGNAL]);
+    (window as any)['reactiveNodeRoute'] = this.route[SIGNAL];
+
+    injectSignalsLogger();
   }
 
   protected search(): void {
