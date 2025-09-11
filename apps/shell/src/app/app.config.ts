@@ -1,5 +1,5 @@
 import { provideHttpClient } from '@angular/common/http';
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideCheckNoChangesConfig, provideZoneChangeDetection, provideZonelessChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideRouterFeature } from '@flight-demo/shared/state';
 import { provideEffects } from '@ngrx/effects';
