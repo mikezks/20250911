@@ -34,25 +34,11 @@ export class FlightSearchComponent {
   };
   protected flights = this.ticketsFacade.flights;
 
-  constructor() {
-    let activeConsumer: ReactiveNode | undefined;
-    const useSignalRoute = signal(true);
-    activeConsumer = effect(() => {
-      if (useSignalRoute()) {
-        console.log('Route Logger Effect:' + this.route());
-      } else {
-        console.log('Filter Logger Effect:' + this.filter());
-      }
-    });
+  constructor() {effect(() => console.log(this.route()));
     effect(() => {
       this.filter();
       untracked(() => this.search());
     });
-
-    console.log(this.route[SIGNAL]);
-    (window as any)['reactiveNodeRoute'] = this.route[SIGNAL];
-
-    injectSignalsLogger();
   }
 
   protected search(): void {
