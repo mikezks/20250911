@@ -6,10 +6,7 @@
   </div>
   
   <div class="card-body">
-    <app-flight-filter
-      [filter]="filter()"
-      (searchTrigger)="search($event)"
-    >
+    <app-flight-filter [(filter)]="filter">
       @if (flights?.length) {
         <div class="flight-filter-info">
           {{ flights?.length }} flights found!
@@ -26,7 +23,7 @@
 </div>
 
 <div class="row">
-  @for (flight of flights; track flight) {
+  @for (flight of flights; track flight.id) {
     <div class="col-xs-12 col-sm-6 col-md-4">
       <app-flight-card
         [item]="flight"
