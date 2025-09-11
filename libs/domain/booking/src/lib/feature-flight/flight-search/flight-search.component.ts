@@ -1,10 +1,8 @@
-import { Component, computed, effect, signal, untracked } from '@angular/core';
+import { JsonPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, effect, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Flight, injectTicketsFacade } from '../../logic-flight';
 import { FlightCardComponent, FlightFilterComponent } from '../../ui-flight';
-import { JsonPipe } from '@angular/common';
-import { ReactiveNode, SIGNAL } from '@angular/core/primitives/signals';
-import { injectSignalsLogger } from '@flight-demo/shared/core';
 
 
 @Component({
@@ -16,6 +14,7 @@ import { injectSignalsLogger } from '@flight-demo/shared/core';
     FlightFilterComponent
   ],
   templateUrl: './flight-search.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FlightSearchComponent {
   private ticketsFacade = injectTicketsFacade();
@@ -33,12 +32,19 @@ export class FlightSearchComponent {
     5: true
   };
   protected flights = this.ticketsFacade.flights;
+  protected firstname = 'Peter';
 
-  constructor() {effect(() => console.log(this.route()));
+  constructor() {
+    effect(() => console.log(this.route()));
     effect(() => {
       this.filter();
       untracked(() => this.search());
     });
+
+    setTimeout(() => {
+      this.firstname = 'Mary';
+      console.log('Firstname should render ' + this.firstname);
+    }, 3_000);
   }
 
   protected search(): void {
