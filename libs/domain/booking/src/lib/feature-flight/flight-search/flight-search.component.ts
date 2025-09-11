@@ -32,7 +32,6 @@ export class FlightSearchComponent {
     5: true
   };
   protected flights = this.ticketsFacade.flights;
-  protected firstname = 'Peter';
 
   constructor() {
     effect(() => console.log(this.route()));
@@ -40,11 +39,6 @@ export class FlightSearchComponent {
       this.filter();
       untracked(() => this.search());
     });
-
-    setTimeout(() => {
-      this.firstname = 'Mary';
-      console.log('Firstname should render ' + this.firstname);
-    }, 3_000);
   }
 
   protected search(): void {

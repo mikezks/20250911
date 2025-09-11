@@ -12,10 +12,6 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
-    provideCheckNoChangesConfig({
-      exhaustive: true,
-      interval: 2_000
-    }),
     provideRouter(APP_ROUTES,
       withComponentInputBinding()
     ),
