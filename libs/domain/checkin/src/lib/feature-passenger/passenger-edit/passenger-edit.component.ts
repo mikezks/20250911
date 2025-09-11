@@ -27,24 +27,14 @@ export class PassengerEditComponent {
   });
 
   id = input(0, { transform: numberAttribute });
-  private id$ = toObservable(this.id);
-  private passenger$ = this.id$.pipe(
-    switchMap(id => this.passengerService.findById(id))
+  private passenger = toSignal(
+    toObservable(this.id).pipe(
+      switchMap(id => this.passengerService.findById(id))
+    ), { initialValue: initialPassenger }
   );
-  private passenger = toSignal(this.passenger$, {
-    // requireSync: true,
-    initialValue: initialPassenger
-  });
-  // private passenger = signal(initialPassenger);
 
   constructor() {
-    effect(() => console.log(this.id()));
     effect(() => this.editForm.patchValue(this.passenger()));
-
-    /* setTimeout(() => this.passenger.set({
-      ...initialPassenger,
-      firstName: 'Mary'
-    }), 3_000); */
   }
 
   protected save(): void {
