@@ -1,13 +1,14 @@
 import { computed, inject } from '@angular/core';
 import { mapResponse } from '@ngrx/operators';
 import { signalStore, type, withComputed, withProps, withState } from '@ngrx/signals';
-import { entityConfig, removeAllEntities, setAllEntities, withEntities } from '@ngrx/signals/entities';
+import { entityConfig, removeAllEntities, setAllEntities, updateEntity, withEntities } from '@ngrx/signals/entities';
 import { Events, on, withEffects, withReducer } from '@ngrx/signals/events';
 import { switchMap } from 'rxjs';
 import { FlightService } from '../data-access/flight.service';
 import { Flight } from '../model/flight';
 import { FlightFilter } from '../model/flight-filter';
 import { flightEvents } from './flight.events';
+import { addMinutes } from '@flight-demo/shared/core';
 
 
 export interface BookingState {
@@ -51,8 +52,17 @@ export const BookingStore = signalStore(
   // Updaters
   withReducer(
     on(flightEvents.flightFilterChanged, ({ payload: filter }) => ({ filter })),
+    on(flightEvents.flightSelectionChanged, ({ payload: { id, selected }}, state) => {
+      console.log('reducer');
+      return ({
+      basket: { ...state.basket, [id]: selected }
+    });}),
     on(flightEvents.flightsLoaded, ({ payload: flights }) =>
       setAllEntities(flights, flightConfig)),
+    on(flightEvents.flightDelayTriggered, ({ payload: { id, min }}) =>
+      updateEntity({ id, changes:
+        flight => ({ ...flight, date: addMinutes(flight.date, min || 5) })
+      }, flightConfig)),
     on(flightEvents.flightsResetTriggered, () => removeAllEntities(flightConfig)),
   ),
   // Side-Effects
