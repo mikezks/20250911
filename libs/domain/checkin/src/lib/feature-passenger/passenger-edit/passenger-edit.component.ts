@@ -1,7 +1,7 @@
 import { httpResource } from '@angular/common/http';
 import { Component, input, numberAttribute } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Control, form, required, schema } from '@angular/forms/signals';
+import { Control, FieldValidationResult, form, required, schema, validate } from '@angular/forms/signals';
 import { RouterLink } from '@angular/router';
 import { initialPassenger, Passenger } from '../../logic-passenger';
 
@@ -9,6 +9,18 @@ import { initialPassenger, Passenger } from '../../logic-passenger';
 // (3) Form Logic: Schema w/ validators, disabled, readonly, hidden, etc.
 const passengerSchema = schema<Passenger>(passengerPath => {
   required(passengerPath.passengerStatus);
+  validate(passengerPath.passengerStatus, ({ value, field }) => {
+    const validStatus = ['A', 'C'];
+    
+    if (!validStatus.includes(value())) {
+      return {
+        kind: 'passengerStatus',
+        field: field()
+      } as FieldValidationResult;
+    }
+
+    return undefined;
+  });
 });
 
 
