@@ -1,5 +1,6 @@
-import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals'
+import { patchState, signalStore, type, withComputed, withHooks, withMethods, withState } from '@ngrx/signals'
 import { tapResponse } from '@ngrx/operators'
+import { entityConfig, setAllEntities, withEntities } from '@ngrx/signals/entities'
 import { rxMethod } from '@ngrx/signals/rxjs-interop'
 import { Flight } from '../model/flight';
 import { computed, inject } from '@angular/core';
@@ -8,30 +9,46 @@ import { FlightService } from '../data-access/flight.service';
 import { pipe, switchMap } from 'rxjs';
 
 
+export interface BookingState {
+  filter: FlightFilter;
+  basket: Record<number, boolean>;
+}
+
+export const initialBookingState: BookingState = {
+  filter: {
+    from: 'Hamburg',
+    to: 'Graz',
+    urgent: false
+  },
+  basket: {
+    3: true,
+    5: true,
+  },
+};
+
+export const flightConfig = entityConfig({
+  entity: type<Flight>(),
+  collection: 'flight',
+  // selectId: flight => flight.id
+});
+
+
 export const BookingStore = signalStore(
   { providedIn: 'root' },
   // State
-  withState({
-    filter: {
-      from: 'Hamburg',
-      to: 'Graz',
-      urgent: false
-    },
-    basket: {
-      3: true,
-      5: true,
-    } as Record<number, boolean>,
-    flights: [] as Flight[],
-  }),
+  withState(initialBookingState),
+  withEntities(flightConfig),
   withComputed(store => ({
     delayedFlights: computed(
-      () => store.flights().filter(flight => flight.delayed)
+      () => store.flightEntities().filter(flight => flight.delayed)
     ),
   })),
   // Updaters
   withMethods(store => ({
     setFilter: (filter: FlightFilter) => patchState(store, { filter }),
-    setFlights: (flights: Flight[]) => patchState(store, { flights }),
+    setFlights: (flights: Flight[]) => patchState(
+      store, setAllEntities(flights, flightConfig)
+    ),
   })),
   // Side-Effects
   withMethods((
@@ -50,3 +67,14 @@ export const BookingStore = signalStore(
     onInit: store => store.loadFlights$(store.filter),
   }),
 );
+
+const bookings = [
+  {
+    flightId: 1,
+    passengerId: 5
+  },
+  {
+    flightId: 1,
+    passengerId: 7
+  }
+]
