@@ -3,6 +3,8 @@ import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { PassengerService } from '../../logic-passenger/data-access/passenger.service';
 import { validatePassengerStatus } from '../../util-validation';
+import { httpResource } from '@angular/common/http';
+import { Passenger } from '../../logic-passenger';
 
 
 @Component({
@@ -14,7 +16,6 @@ import { validatePassengerStatus } from '../../util-validation';
   templateUrl: './passenger-edit.component.html'
 })
 export class PassengerEditComponent {
-  private passengerService = inject(PassengerService);
   protected editForm = inject(NonNullableFormBuilder).group({
     id: [0],
     firstName: [''],
@@ -26,7 +27,12 @@ export class PassengerEditComponent {
   });
 
   id = input(0, { transform: numberAttribute });
-  protected passengerResource = this.passengerService.findByIdAsResource(this.id);
+  protected passengerResource = httpResource<Passenger>(() => ({
+    url: 'https://demo.angulararchitects.io/api/passenger',
+    params: {
+      id: this.id()
+    }
+  }));
 
   constructor() {
     effect(() => {
