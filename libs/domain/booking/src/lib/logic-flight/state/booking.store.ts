@@ -1,6 +1,6 @@
 import { patchState, signalStore, type, withComputed, withHooks, withMethods, withState } from '@ngrx/signals'
 import { tapResponse } from '@ngrx/operators'
-import { entityConfig, setAllEntities, withEntities } from '@ngrx/signals/entities'
+import { entityConfig, removeAllEntities, setAllEntities, withEntities } from '@ngrx/signals/entities'
 import { rxMethod } from '@ngrx/signals/rxjs-interop'
 import { Flight } from '../model/flight';
 import { computed, inject } from '@angular/core';
@@ -48,6 +48,9 @@ export const BookingStore = signalStore(
     setFilter: (filter: FlightFilter) => patchState(store, { filter }),
     setFlights: (flights: Flight[]) => patchState(
       store, setAllEntities(flights, flightConfig)
+    ),
+    resetFlights: () => patchState(
+      store, removeAllEntities(flightConfig)
     ),
   })),
   // Side-Effects

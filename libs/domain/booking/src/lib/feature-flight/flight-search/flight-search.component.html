@@ -16,7 +16,7 @@
         </div>
       }
       @if (flights.length) {
-        <button (click)="this.store.setFlights([])"
+        <button (click)="this.store.resetFlights()"
           class="btn btn-default flight-filter-button"
         >Reset</button>
       }
