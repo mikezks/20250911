@@ -8,7 +8,7 @@
   <div class="card-body">
     <app-flight-filter
       [filter]="store.filter()"
-      (filterChange)="store.setFilter($event)"
+      (filterChange)="flightEvents.flightFilterChanged($event)"
     >
       @if (flights.length) {
         <div class="flight-filter-info">
@@ -16,7 +16,7 @@
         </div>
       }
       @if (flights.length) {
-        <button (click)="this.store.resetFlights()"
+        <button (click)="flightEvents.flightsResetTriggered()"
           class="btn btn-default flight-filter-button"
         >Reset</button>
       }

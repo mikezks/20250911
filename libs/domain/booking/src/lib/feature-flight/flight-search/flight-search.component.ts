@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { BookingStore, Flight, FlightFilter } from '../../logic-flight';
+import { injectDispatch } from '@ngrx/signals/events';
+import { BookingStore, Flight } from '../../logic-flight';
+import { flightEvents } from '../../logic-flight/state/flight.events';
 import { FlightCardComponent, FlightFilterComponent } from '../../ui-flight';
 
 
@@ -18,6 +20,7 @@ import { FlightCardComponent, FlightFilterComponent } from '../../ui-flight';
 })
 export class FlightSearchComponent {
   protected store = inject(BookingStore);
+  protected flightEvents = injectDispatch(flightEvents);
 
   protected delay(flight: Flight): void {
     const oldFlight = flight;
@@ -30,7 +33,7 @@ export class FlightSearchComponent {
       delayed: true
     };
 
-    this.store.setFlights(this.store.flightEntities().map(
+    this.flightEvents.flightsLoaded(this.store.flightEntities().map(
       flight => flight.id === newFlight.id ? newFlight : flight
     ));
   }
