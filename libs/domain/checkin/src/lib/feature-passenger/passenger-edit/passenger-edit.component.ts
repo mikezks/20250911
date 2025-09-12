@@ -9,18 +9,14 @@ import { initialPassenger, Passenger } from '../../logic-passenger';
 // (3) Form Logic: Schema w/ validators, disabled, readonly, hidden, etc.
 const passengerSchema = schema<Passenger>(passengerPath => {
   required(passengerPath.passengerStatus);
-  validate(passengerPath.passengerStatus, ({ value, field }) => {
-    const validStatus = ['A', 'C'];
-    
-    if (!validStatus.includes(value())) {
-      return {
+  validate(passengerPath.passengerStatus, ({ value, field }) =>
+    ['A', 'C'].includes(value())
+      ? undefined 
+      : {
         kind: 'passengerStatus',
         field: field()
-      } as FieldValidationResult;
-    }
-
-    return undefined;
-  });
+      } as FieldValidationResult
+  );
 });
 
 
