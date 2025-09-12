@@ -22,19 +22,18 @@ import { initialPassenger, Passenger } from '../../logic-passenger';
   templateUrl: './passenger-edit.component.html'
 })
 export class PassengerEditComponent {
-  // (1) Data Model: Writable Signal
-  passengerState = signal(initialPassenger);
-
-  // (2) Form State: valid, dirty, touched, value
-  editForm = form(this.passengerState);
-
   id = input(0, { transform: numberAttribute });
   protected passengerResource = httpResource<Passenger>(() => ({
     url: 'https://demo.angulararchitects.io/api/passenger',
     params: {
       id: this.id()
     }
-  }));
+  }), { defaultValue: initialPassenger });
+  // (1) Data Model: Writable Signal
+  // passengerState = signal(initialPassenger);
+
+  // (2) Form State: valid, dirty, touched, value
+  editForm = form(this.passengerResource.value);
 
   constructor() {
     effect(() => {
