@@ -35,6 +35,11 @@
         <input id="status" [control]="editForm.passengerStatus" class="form-control" />
       </div>
       @for (error of editForm.passengerStatus().errors(); track error.kind) {
+        @if (error.kind === 'required') {
+          <div class="alert alert-danger">
+            The passenger status is mandatory!
+          </div>
+        }
         @if (error.kind === 'passengerStatus') {
           <div class="alert alert-danger">
             The passenger status is not correct - please don't mess it up! :()
